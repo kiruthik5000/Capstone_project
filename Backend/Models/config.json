@@ -1,0 +1,20 @@
+{
+  "benign_path": "./benign_data.csv",
+  "unseen_path": "./un_seen_df.csv",
+  "save_dir": "./saved_models",
+  "train_sample_n": "10000",
+  "z_dim": "32",
+  "feature_dim": "78",
+  "batch_size": "1024",
+  "epochs": "30",
+  "n_critic": "3",
+  "lambda_gp": "10.0",
+  "lr": "0.0001",
+  "betas": "(0.5, 0.9)",
+  "threshold_percentile": "95",
+  "hybrid_alpha": "0.7",
+  "hybrid_beta": "0.3",
+  "eval_batch_size": "2048",
+  "label_col": "Label",
+  "benign_label": "BENIGN"
+}
