@@ -24,7 +24,11 @@ export default function Sidebar() {
 
       <p className="text-slate-500 text-[11px] uppercase tracking-widest font-semibold mb-3 px-2">Navigation</p>
       <nav className="flex flex-col gap-1.5 flex-1">
-        <NavLink to="/" end className={linkClass}>
+        <NavLink to="/" className={linkClass}>
+          <span className="text-base">⚡</span>
+          <span>Simulate</span>
+        </NavLink>
+        <NavLink to="/live_monitor" end className={linkClass}>
           <span className="text-base">📡</span>
           <span>Live Monitor</span>
         </NavLink>

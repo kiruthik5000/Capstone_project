@@ -1,13 +1,14 @@
 import joblib
 import torch
 import os
-from .wgan_architecture import Generator, Critic
+
+from Backend.Utils import wgan_architecture
 
 # Constants
 FEATURE_DIM = 78
 Z_DIM = 64
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-BASE_MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "Models")
+BASE_MODELS_DIR = r"E:/PROJECT py/Capstone-project/Backend/Models"
 
 def load_scalar():
     path = os.path.join(BASE_MODELS_DIR, "scaler.joblib")
@@ -33,11 +34,12 @@ def get_threshold():
             return 0.5
 
 def load_generator():
+
     path = os.path.join(BASE_MODELS_DIR, "wgan_generator.pth")
     if not os.path.exists(path):
         raise FileNotFoundError(f"Generator model not found at {path}")
         
-    G = Generator(Z_DIM, FEATURE_DIM).to(DEVICE)
+    G = wgan_architecture.Generator(Z_DIM, FEATURE_DIM).to(DEVICE)
     G.load_state_dict(torch.load(path, map_location=DEVICE))
     G.eval()
     return G
@@ -47,8 +49,19 @@ def load_critic():
     if not os.path.exists(path):
         raise FileNotFoundError(f"Critic model not found at {path}")
         
-    D = Critic(FEATURE_DIM).to(DEVICE)
+    D = wgan_architecture.Critic(FEATURE_DIM).to(DEVICE)
     D.load_state_dict(torch.load(path, map_location=DEVICE))
     D.eval()
     return D
+def load_xgb():
+    path = os.path.join(BASE_MODELS_DIR, "xgboost_ids.pkl")
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Anomaly Classifier model not found at {path}")
 
+    model = joblib.load(path)
+    return  model
+if __name__ == '__main__':
+    load_scalar()
+    load_generator()
+    load_critic()
+    get_threshold()

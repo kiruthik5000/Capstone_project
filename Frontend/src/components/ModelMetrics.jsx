@@ -1,8 +1,85 @@
+import { useState } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 import { modelMetrics, confusionMatrix, rocCurveData } from '../utils/dataSimulator';
+import lossImg from '../assets/loss_image.png';
+import classificationImg from '../assets/classification_matrix.png';
+import featureImg from '../assets/feature_importance.png';
+import multiClassCmImg from '../assets/multi_class_cm.png';
+import multiClassRocImg from '../assets/multi_class_roc.png';
+
+/* ─── Lightbox ─── */
+function Lightbox({ src, title, onClose }) {
+  return (
+    <div
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/85 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative max-w-5xl w-full mx-4 rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-3 bg-slate-900 border-b border-slate-700/50">
+          <span className="text-slate-300 text-sm font-semibold">{title}</span>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-700 text-lg"
+          >✕</button>
+        </div>
+        <div className="bg-slate-950 p-4">
+          <img src={src} alt={title} className="w-full object-contain max-h-[80vh] rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Training Plot Card ─── */
+function PlotCard({ src, title, description, accent, onExpand }) {
+  return (
+    <div className="bg-slate-800/40 border border-slate-700/40 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 hover:border-cyan-500/40 hover:shadow-cyan-500/10">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700/40 bg-slate-800/60">
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${accent}`} />
+          <h3 className="text-white text-sm font-semibold">{title}</h3>
+        </div>
+        <button
+          onClick={onExpand}
+          className="text-slate-500 hover:text-cyan-400 transition-colors text-xs flex items-center gap-1 font-medium"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+          Expand
+        </button>
+      </div>
+      {/* Image */}
+      <div
+        className="relative cursor-pointer bg-white overflow-hidden"
+        onClick={onExpand}
+      >
+        <img
+          src={src}
+          alt={title}
+          className="w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+          style={{ minHeight: '200px', maxHeight: '280px' }}
+        />
+        <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/5 transition-colors duration-300 flex items-center justify-center">
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-xs font-medium bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-sm">
+            🔍 Click to expand
+          </span>
+        </div>
+      </div>
+      {/* Description */}
+      {description && (
+        <p className="text-slate-500 text-xs px-4 py-2.5 border-t border-slate-700/30">{description}</p>
+      )}
+    </div>
+  );
+}
 
 const metricCards = [
   { label: 'Accuracy', value: modelMetrics.accuracy, format: 'pct', colorClass: 'text-cyan-400', bgClass: 'bg-cyan-500/10', borderClass: 'border-cyan-500/20' },
@@ -20,7 +97,41 @@ const cmGrid = [
   { label: 'True Negative', value: confusionMatrix.trueNegative, bg: 'bg-emerald-500/20', ring: 'ring-emerald-500/20' },
 ];
 
+const trainingPlots = [
+  {
+    src: lossImg,
+    title: 'Training & Validation Loss',
+    description: 'Anomaly detection loss curve over 100 epochs — model converges smoothly with minimal overfitting.',
+    accent: 'bg-blue-400',
+  },
+  {
+    src: classificationImg,
+    title: 'Classification Matrix',
+    description: 'Visualised confusion matrix showing true vs predicted class distributions.',
+    accent: 'bg-emerald-400',
+  },
+  {
+    src: featureImg,
+    title: 'Feature Importance',
+    description: 'Top contributing features ranked by their impact on model predictions.',
+    accent: 'bg-amber-400',
+  },
+  {
+    src: multiClassCmImg,
+    title: 'Multi-Class Confusion Matrix',
+    description: 'Detailed view of correct vs incorrect classifications across multiple attack types.',
+    accent: 'bg-purple-400',
+  },
+  {
+    src: multiClassRocImg,
+    title: 'Multi-Class ROC Curve',
+    description: 'Performance overview showing true positive vs false positive rates per class.',
+    accent: 'bg-pink-400',
+  },
+];
+
 export default function ModelMetrics() {
+  const [lightbox, setLightbox] = useState(null);
   return (
     <div>
       {/* Metric Cards Grid */}
@@ -109,6 +220,36 @@ export default function ModelMetrics() {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* ── Training Insights ── */}
+      <div className="mt-8">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="w-1 h-5 rounded-full bg-gradient-to-b from-cyan-400 to-blue-600" />
+          <h2 className="text-white text-base font-bold tracking-tight">Training Insights</h2>
+          <span className="text-slate-500 text-xs font-normal ml-1">— click any plot to expand</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {trainingPlots.map(plot => (
+            <PlotCard
+              key={plot.title}
+              src={plot.src}
+              title={plot.title}
+              description={plot.description}
+              accent={plot.accent}
+              onExpand={() => setLightbox(plot)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <Lightbox
+          src={lightbox.src}
+          title={lightbox.title}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </div>
   );
 }

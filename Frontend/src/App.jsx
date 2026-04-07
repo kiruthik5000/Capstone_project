@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import LiveMonitor from './pages/LiveMonitor';
 import ModelEvaluation from './pages/ModelEvaluation';
 import Alert from './pages/Alert';
+import Simulate from './pages/Simulate';
 
 function App() {
   return (
@@ -11,9 +12,10 @@ function App() {
         <Sidebar />
         <main className="flex-1 p-8 overflow-auto">
           <Routes>
-            <Route path="/" element={<LiveMonitor />} />
+            <Route path="/live_monitor" element={<LiveMonitor />} />
             <Route path="/evaluation" element={<ModelEvaluation />} />
             <Route path="/alerts" element={<Alert/>} />
+            <Route path="/" element={<Simulate />} />
           </Routes>
         </main>
       </div>
