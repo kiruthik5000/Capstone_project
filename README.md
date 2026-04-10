@@ -3,6 +3,14 @@
 ### Hybrid Intrusion Detection System (IDS) using WGAN & Machine Learning
 
 ---
+![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
+![NumPy](https://img.shields.io/badge/NumPy-Numerical%20Computing-orange?logo=numpy)
+![Tkinter](https://img.shields.io/badge/Tkinter-GUI-green)
+![EditDistance](https://img.shields.io/badge/EditDistance-String%20Matching-red)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-Deep%20Learning-FF6F00?logo=tensorflow)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C?logo=pytorch)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-150458?logo=pandas)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-Visualization-blue)
 
 ## 📌 Overview
 
